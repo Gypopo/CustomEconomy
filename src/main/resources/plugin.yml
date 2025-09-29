@@ -1,0 +1,10 @@
+name: CustomEconomy
+version: 1.0.0
+main: me.gypopo.economy.CustomEconomy
+api-version: 1.21
+authors: [Gypopo]
+description: A non persistent economy provider using the ESGUI API
+folia-supported: true
+loadbefore:
+  - EconomyShopGUI
+  - EconomyShopGUI-Premium
