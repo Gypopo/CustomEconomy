@@ -1,6 +1,8 @@
 package me.gypopo.economy.command;
 
 import me.gypopo.economy.CustomEconomy;
+import me.gypopo.economyshopgui.api.objects.ExternalEconomy;
+import me.gypopo.economyshopgui.providers.economys.ExternalEconomyProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -33,7 +35,7 @@ public class EcoCommand extends BukkitCommand {
                         double amount = Double.parseDouble(args[2]);
                         this.plugin.set(target.getUniqueId(), BigDecimal.valueOf(amount));
 
-                        target.sendMessage("§aYour balance has been set to §f" + amount + " " + this.plugin.customEconomy.getFriendly());
+                        target.sendMessage("§aYour balance has been set to §f" + amount + " " + this.plugin.provider.getCustomEconomy().getFriendly());
                     } catch (NumberFormatException e) {
                         sender.sendMessage("§cInvalid amount");
                     }

@@ -2,7 +2,9 @@ package me.gypopo.economy;
 
 import me.gypopo.economy.command.EcoCommand;
 import me.gypopo.economy.hook.ESGUIEcoHook;
+import me.gypopo.economy.hook.EconomyProvider;
 import me.gypopo.economyshopgui.api.events.EconomyPreLoadEvent;
+import me.gypopo.economyshopgui.api.objects.ExternalEconomy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.event.EventHandler;
@@ -15,15 +17,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public final class CustomEconomy extends JavaPlugin implements Listener {
+public final class CustomEconomy extends JavaPlugin {
 
     private final Map<UUID, BigDecimal> balances = new HashMap<>();
 
-    public final ESGUIEcoHook customEconomy = new ESGUIEcoHook(this);
+    public EconomyProvider provider;
 
     @Override
     public void onEnable() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, this);
+        if (this.getServer().getPluginManager().getPlugin("EconomyShopGUI-Premium") != null) {
+            this.provider = new EconomyProvider(this);
+        } else {
+            this.getLogger().warning("Failed to find EconomyShopGUI-Premium, disabling...");
+            this.onDisable();
+        }
+
+        Bukkit.getServer().getPluginManager().registerEvents(this.provider, this);
         try {
             Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             bukkitCommandMap.setAccessible(true);
@@ -39,11 +48,6 @@ public final class CustomEconomy extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         this.balances.clear();
-    }
-
-    @EventHandler
-    public void onEconomyPreLoadEvent(EconomyPreLoadEvent e) {
-        e.registerExternal(this.customEconomy);
     }
 
     public BigDecimal getBalance(UUID uuid) {
